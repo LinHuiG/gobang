@@ -71,14 +71,32 @@ def win(qp):
             x -= 1
             y += 1
     return -1
+def xzqp(qp):
+    an=np.zeros((19, 19))
+    for i in range(0,18):
+        for j in range(0,18):
+            an[i][j]=qp[j][18-i]
+    return an
 def trainsj(mo,qplist,lzlist,winer):
     qplist2=[]
     if (winer == 0):
         for qp in qplist:
             x=qpzh(qp)
             qplist2.append(x)
-    sr=np.asarray(qplist2)
-    sc=np.asarray(lzlist)
+    qplistfn=[]
+    lzlistfn=[]
+    for qp in qplist2:
+        an=qp
+        for k in range(1,4):
+            qplistfn.append(an)
+            an=xzqp(an)
+    for lz in lzlist:
+        bn=lz
+        for k in range(1, 4):
+            lzlistfn.append(bn)
+            bn=xzqp(bn)
+    sr=np.asarray(qplistfn)
+    sc=np.asarray(lzlistfn)
     mo.fit(sr,sc,epochs=50,batch_size=10)
     mo.save("GAI.h5")
 
