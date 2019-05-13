@@ -37,11 +37,12 @@ def win(qp):
                 c=0
             if(c==5):
                 return qp[j][i]
-    for i in range(0,38):
+    for i in range(0,37):
         x=i+1
         y=1
         if(i>=19):
-            x=
+            x=1
+            y=i-19+1
         c=0
         while(x>=0&y>=0&x<19&y<19):
             if(qp[x][y]==qp[x-1][y-1]):
@@ -54,6 +55,9 @@ def win(qp):
             y+=1
         x = i -1
         y = 1
+        if (i >= 19):
+            x = 18
+            y = i - 19 - 1
         c = 0
         while (x >= 0 & y >= 0 & x < 19 & y < 19):
             if (qp[x][y] == qp[x + 1][y - 1]):
