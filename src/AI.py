@@ -3,14 +3,16 @@ from keras import models
 from keras import layers
 import numpy as np
 import os
+from keras import backend as K
+K.set_image_dim_ordering('th')
 
 model_dir=''
 def creatmodel():
     mo = models.Sequential()
-    mo.add(layers.Dense(800, activation='relu', input_shape=(19 * 19,)))
-    mo.add(layers.Dense(600, activation='tanh'))
-    mo.add(layers.Dense(500, activation='relu'))
-    mo.add(layers.Dense(19 * 19, activation='relu'))
+    mo.add(layers.Conv1D(19,19, activation='relu', input_shape=(19 , 19,)))
+    mo.add(layers.Conv1D(19,19, activation='tanh'))
+    mo.add(layers.Conv1D(19,19, activation='relu'))
+    mo.add(layers.Conv1D(19 ,19, activation='relu'))
     mo.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
     return  mo;
 def getmodel():
@@ -23,7 +25,7 @@ def win(qp):
     for i in range(0,18):
         c=0
         for j in range(1,18):
-            if(qp[i][j]==qp[i][j-1])&(qp[i][j]!=-1):
+            if(qp[i][j]==qp[i][j-1])and(qp[i][j]!=-1):
                 c+=1
             else:
                 c=0
@@ -31,7 +33,7 @@ def win(qp):
                 return qp[i][j]
         c=0
         for j in range(1,18):
-            if(qp[j][i]==qp[j-1][i])&(qp[j][i]!=-1):
+            if(qp[j][i]==qp[j-1][i])and(qp[j][i]!=-1):
                 c+=1
             else:
                 c=0
@@ -44,7 +46,7 @@ def win(qp):
             x=1
             y=i-19+1
         c=0
-        while(x>=0&y>=0&x<19&y<19):
+        while(x>=0&y>=0 and x<19&y<19):
             if(qp[x][y]==qp[x-1][y-1]):
                 c+=1
             else:
@@ -59,7 +61,7 @@ def win(qp):
             x = 18
             y = i - 19 - 1
         c = 0
-        while (x >= 0 & y >= 0 & x < 19 & y < 19):
+        while (x >= 0 & y >= 0 and x < 19 & y < 19):
             if (qp[x][y] == qp[x + 1][y - 1]):
                 c += 1
             else:
@@ -68,34 +70,68 @@ def win(qp):
                 return qp[x][y]
             x -= 1
             y += 1
+    return -1
+def trainsj(mo,qplist,lzlist,winer):
+    qplist2=[]
+    if (winer == 0):
+        for qp in qplist:
+            x=qpzh(qp)
+            qplist2.append(x)
+    sr=np.asarray(qplist2)
+    sc=np.asarray(lzlist)
+    mo.fit(sr,sc,epochs=50,batch_size=10)
+    mo.save("GAI.h5")
 
 
-
+def qpzh(qp):
+    for i in range(0, 18):
+        for j in range(0, 18):
+            if (qp[i][j] > 0):
+                qp[i][j] += 1
+                qp[i][j] %= 2
+    return qp
 
 def trainmodel(mo):
-    qp=np.zeros((19,19))
-    count=0;
-    while(not win(qp)):
-        for i in range(0,18):
-            for j in range(0, 18):
-                qp[i][j]=-1
-        ans=mo.predict(qp)
-        ans=ans.reshape((19,19))
-        maxi=0
-        maxj=0;
-        for i in range(0,18):
-            for j in range(0, 18):
-                if((ans[i][j]>ans[maxi][maxj])or qp[maxi][maxj]==-1)and qp[i][j]!=-1 :
-                    maxi=i
-                    maxj=j
-        
+    heizi = []
+    heizil = []
+    baizi = []
+    baizil = []
+    qp = np.zeros((19, 19))
+    count = 0
+    for i in range(0, 18):
+        for j in range(0, 18):
+            qp[i][j] = -1
+    while (win(qp) == -1):
+        count += 1
 
+        an=qp
+        if(count%2==0):
+            an=qpzh(qp)
+        an=[an]
+        an=np.asarray(an)
+        ans = mo.predict(an)
+        ans = ans.reshape((19, 19))
+        maxi = 0
+        maxj = 0
+        for i in range(0, 18):
+            for j in range(0, 18):
+                if ((ans[i][j] > ans[maxi][maxj]) or qp[maxi][maxj] != -1) and qp[i][j] == -1:
+                    maxi = i
+                    maxj = j
+        if (count % 2 == 1):
+            heizi.append(qp)
+            heizil.append(ans)
+            qp[maxi][maxj]=1
+        else:
+            baizi.append(qp)
+            baizil.append(ans)
+            qp[maxi][maxj] = 0
 
+    if(win(qp)==1):
+        trainsj(mo,heizi,heizil,1)
+    else:
+        trainsj(mo, baizi, baizil, 0)
 if __name__ == '__main__':
     mymodel=getmodel()
-    mymodel.fit()
-    mymodel
+    trainmodel(mymodel)
 
-
-    print("hello world")
-    pass;
