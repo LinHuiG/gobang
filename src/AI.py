@@ -9,10 +9,10 @@ K.set_image_dim_ordering('th')
 model_dir='model.h5'
 def creatmodel():
     mo = models.Sequential()
-    mo.add(layers.Conv1D(19,5,activation='relu',padding='same', input_shape=(19 , 19,)))
-    mo.add(layers.Conv1D(128,1, activation='tanh'))
-    mo.add(layers.Conv1D(64,1, activation='relu'))
-    mo.add(layers.Conv1D(19,1, activation='relu'))
+    mo.add(layers.Conv2D(filters=(19,19,1,1),kernel_size=(9,9),strides=(1,1),activation='relu',padding='same', input_shape=(19,19,1,)))
+    mo.add(layers.Conv2D(filters=(128,128,1,1),strides=(1,1), activation='tanh'))
+    mo.add(layers.Conv2D(filters=(64,64,1,1),strides=(1,1), activation='relu'))
+    mo.add(layers.Conv2D(filters=(19,19,1,1),strides=(1,1), activation='relu'))
     mo.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
     print(mo.summary())
     return  mo;
@@ -152,6 +152,8 @@ def trainmodel(mo,cs):
             trainsj(mo,heizi,heizil,1)
         else:
             trainsj(mo, baizi, baizil, 0)
+def getAns(qp):
+    mo=getmodel()
 
 if __name__ == '__main__':
     mymodel=getmodel()
