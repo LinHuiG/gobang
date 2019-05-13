@@ -149,7 +149,6 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
         g.fillRect(OFFSET -10, 50, 15, 400);
         g.drawImage(bi, 0+OFFSET, 0, this);
     }
-
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
 
@@ -199,7 +198,6 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
         this.repaint();
 
 
-
     }
     public void mousePressed(MouseEvent e) {
         // TODO Auto-generated method stub
@@ -214,8 +212,11 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             y = (y - 60) / 20;
             if(x<0||y<0||x>=19||y>=19)return;
             putdown(x,y);
+            repa();
             if(rj==1&&color==1)
             {
+                long st= System.currentTimeMillis();
+                while(System.currentTimeMillis()-st<100);
                 int []ans=ai.getXY(checkerBoard.getMap(),checkerBoard);
                 x=ans[0];
                 y=ans[1];
@@ -228,7 +229,6 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
 
     public void mouseReleased(MouseEvent e) {
         // TODO Auto-generated method stub
-
     }
     private MouseMotionListener mouseMotionListener = new MouseMotionAdapter() {
         public void mouseMoved(MouseEvent e) {
@@ -279,7 +279,6 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
     // 判断棋子连接的数量
     public void run() {
         // TODO Auto-generated method stub
-
 
             while (true) {
 

@@ -60,8 +60,6 @@ public class Ai {
     private final   String[] NONE_ = {""};
     // 棋盘宽度
     private final   int BOARD_SIZE = 19;
-    // 棋盘
-    // 棋盘
     private   int[][] board = new int[BOARD_SIZE][BOARD_SIZE];
     private   int[][] scoreMatrix ; // 搜索过程记录落子评分
     private   final int INFINITY = 1000000000;
