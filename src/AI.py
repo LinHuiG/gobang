@@ -9,10 +9,10 @@ K.set_image_dim_ordering('th')
 model_dir='model.h5'
 def creatmodel():
     mo = models.Sequential()
-    mo.add(layers.Conv2D(filters=(19,19,1,1),kernel_size=(9,9),strides=(1,1),activation='relu',padding='same', input_shape=(19,19,1,)))
-    mo.add(layers.Conv2D(filters=(128,128,1,1),strides=(1,1), activation='tanh'))
-    mo.add(layers.Conv2D(filters=(64,64,1,1),strides=(1,1), activation='relu'))
-    mo.add(layers.Conv2D(filters=(19,19,1,1),strides=(1,1), activation='relu'))
+    mo.add(layers.Conv2D(filters=3,kernel_size=[9,9],activation='relu',padding='same', input_shape=[1,19,19,]))
+    mo.add(layers.Conv2D(filters=3,kernel_size=[1,1], activation='tanh'))
+    mo.add(layers.Conv2D(filters=1,kernel_size=[1,1], activation='relu'))
+    mo.add(layers.Conv2D(filters=1,kernel_size=[1,1], activation='relu'))
     mo.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
     print(mo.summary())
     return  mo;
@@ -89,12 +89,12 @@ def trainsj(mo,qplist,lzlist,winer):
     for qp in qplist2:
         an=qp
         for k in range(1,4):
-            qplistfn.append(an)
+            qplistfn.append([an])
             an=xzqp(an)
     for lz in lzlist:
         bn=lz
         for k in range(1, 4):
-            lzlistfn.append(bn)
+            lzlistfn.append([bn])
             bn=xzqp(bn)
     sr=np.asarray(qplistfn)
     sc=np.asarray(lzlistfn)
@@ -128,17 +128,8 @@ def trainmodel(mo,cs):
             an=qp
             if(count%2==0):
                 an=qpzh(qp)
-            an=[an]
-            an=np.asarray(an)
-            ans = mo.predict(an)
-            ans = ans.reshape((19, 19))
-            maxi = 0
-            maxj = 0
-            for i in range(0, 18):
-                for j in range(0, 18):
-                    if ((ans[i][j] > ans[maxi][maxj]) or qp[maxi][maxj] != -1) and qp[i][j] == -1:
-                        maxi = i
-                        maxj = j
+            [maxi,maxj,ans]=getAns(an,mo,1)
+
             if (count % 2 == 1):
                 heizi.append(qp)
                 heizil.append(ans)
@@ -152,10 +143,23 @@ def trainmodel(mo,cs):
             trainsj(mo,heizi,heizil,1)
         else:
             trainsj(mo, baizi, baizil, 0)
-def getAns(qp):
-    mo=getmodel()
+def getAns(qp,mo=-1,sc=-1):
+    if(mo==-1):
+        mo=getmodel()
+    ans=mo.predict(np.asarray([[qp]]))
+    ans=ans.reshape(19,19)
+    maxi = 0
+    maxj = 0
+    for i in range(0, 18):
+        for j in range(0, 18):
+            if ((ans[i][j] > ans[maxi][maxj]) or qp[maxi][maxj] != -1) and qp[i][j] == -1:
+                maxi = i
+                maxj = j
+    if(sc==-1):
+        return [maxi,maxj]
+    return [maxi,maxj,ans]
 
 if __name__ == '__main__':
     mymodel=getmodel()
-    trainmodel(mymodel,100)
+    trainmodel(mymodel,2)
 
