@@ -3,16 +3,16 @@ from keras import models
 from keras import layers
 import numpy as np
 import os
-from keras import backend as K
-K.set_image_dim_ordering('th')
-
-model_dir='model.h5'
+model_dir='D:/专业/作业/算法课设/gobang/model.h5'
 def creatmodel():
     mo = models.Sequential()
-    mo.add(layers.Conv2D(filters=3,kernel_size=[9,9],activation='relu',padding='same', input_shape=[1,19,19,]))
-    mo.add(layers.Conv2D(filters=3,kernel_size=[1,1], activation='tanh'))
-    mo.add(layers.Conv2D(filters=1,kernel_size=[1,1], activation='relu'))
-    mo.add(layers.Conv2D(filters=1,kernel_size=[1,1], activation='relu'))
+    mo.add(layers.Conv2D(filters=3, kernel_size=[9, 9], activation='relu', padding='same', input_shape=[19, 19,1]))
+    #mo.add(layers.MaxPooling2D(pool_size=(2,2),padding='same'))
+    mo.add(layers.Dense(units=64*64, activation='relu',trainable='true'))
+    mo.add(layers.Dense(units=32*32, activation='relu',trainable='true'))
+    mo.add(layers.Dense(units=19*19, activation='relu',trainable='true'))
+    mo.add(layers.Dense(units=1, activation='relu',trainable='true'))
+    #mo.add(layers.Conv2D(filters=19,kernel_size=[1,1], activation='relu'))
     mo.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
     print(mo.summary())
     return  mo;
@@ -96,6 +96,7 @@ def trainsj(mo,qplist,lzlist,winer):
         for k in range(1, 4):
             lzlistfn.append([bn])
             bn=xzqp(bn)
+
     sr=np.asarray(qplistfn)
     sc=np.asarray(lzlistfn)
     mo.fit(sr,sc,epochs=50,batch_size=10)
@@ -119,8 +120,8 @@ def trainmodel(mo,cs):
         baizil = []
         qp = np.zeros((19, 19))
         count = 0
-        for i in range(0, 18):
-            for j in range(0, 18):
+        for i in range(19):
+            for j in range(19):
                 qp[i][j] = -1
         while (win(qp) == -1):
             count += 1
@@ -128,7 +129,7 @@ def trainmodel(mo,cs):
             an=qp
             if(count%2==0):
                 an=qpzh(qp)
-            [maxi,maxj,ans]=getAns(an,mo,1)
+            [maxi,maxj,qp,ans]=getAns(an,mo,1)
 
             if (count % 2 == 1):
                 heizi.append(qp)
@@ -146,20 +147,47 @@ def trainmodel(mo,cs):
 def getAns(qp,mo=-1,sc=-1):
     if(mo==-1):
         mo=getmodel()
-    ans=mo.predict(np.asarray([[qp]]))
+    qpt=[[[0] * 1 for _ in range(19) ] for _ in range(19)]
+    for i in range(19):
+        for j in range(19):
+            qpt[i][j][0]=qp[i][j]
+    qp=qpt
+    anre=mo.predict(np.asarray(qp))
+    ans=np.zeros(19,19)
+    for i in range(19):
+        for j in range(19):
+            ans[i][j]=anre[i][j][0]
     ans=ans.reshape(19,19)
     maxi = 0
     maxj = 0
-    for i in range(0, 18):
-        for j in range(0, 18):
+    for i in range(19):
+        for j in range(19):
             if ((ans[i][j] > ans[maxi][maxj]) or qp[maxi][maxj] != -1) and qp[i][j] == -1:
                 maxi = i
                 maxj = j
     if(sc==-1):
+
         return [maxi,maxj]
-    return [maxi,maxj,ans]
+    return [maxi,maxj,qp,anre]
+def JgetAns():
+    qp=np.zeros((19,19))
+    with open ('D:/专业/作业/算法课设/gobang/temp.txt','r') as f:
+        s=f.read()
+        i=0
+        for x in s:
+            print (i)
+            qp[int(i/19)][i%19]=int(x)
+            i+=1
+    print (qp)
+    [x,y]=getAns(qp)
+    x=str(x)
+    y=str(y)
+    with open('D:/专业/作业/算法课设/gobang/temp.txt', 'w') as f:
+        f.write(x+" "+y)
+
 
 if __name__ == '__main__':
+    #JgetAns()
     mymodel=getmodel()
-    trainmodel(mymodel,2)
+    trainmodel(mymodel,100)
 
