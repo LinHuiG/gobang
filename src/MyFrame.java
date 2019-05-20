@@ -74,7 +74,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
 
         // 双缓冲技术防止屏幕闪烁
 
-        BufferedImage bi = new BufferedImage(500, 500,
+        BufferedImage bi = new BufferedImage(500, 550,
                 BufferedImage.TYPE_INT_RGB);
         Graphics g2 = bi.createGraphics();
         if(SELECT==3)
