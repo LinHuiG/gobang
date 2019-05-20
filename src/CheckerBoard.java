@@ -188,4 +188,7 @@ public class CheckerBoard {
             System.out.println(" ");
         }
     }
+
+
+
 }

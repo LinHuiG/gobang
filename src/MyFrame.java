@@ -1,17 +1,10 @@
 
-import com.sun.scenario.effect.Offset;
-
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Time;
-
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -21,11 +14,10 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
     private final int CELL_WIDTH = 20;
     public static int rj;
     public static final int BOARD_SIZE = 19;// 棋盘格数
-    public static final int BT = BOARD_SIZE + 2;
-    public static final int CENTER = BOARD_SIZE / 2 + 1;// 中心点
+    public static final int qppy_x=60;// 棋盘偏移
+    public static final int qppy_y=50;
     private Ai ai;
     private int cx=-1, cy=-1;
-    private final int OFFSET = 50;// 棋盘偏移
     int width = Toolkit.getDefaultToolkit().getScreenSize().width;
     // 取得屏幕的高度
     int height = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -57,7 +49,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
         this.checkerBoard=checkerBoard;
         this.setTitle("五子棋");
         // 设置窗体大小
-        this.setSize(500, 500);
+        this.setSize(500, 550);
         // 设置窗体出现位置
         this.setLocation((width - 500) / 2, (height - 500) / 2);
         // 将窗体设置为大小不可改变
@@ -91,33 +83,33 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
         Graphics g2 = bi.createGraphics();
 
         g2.setColor(Color.GRAY);
-        g2.fillRect(0, 50, 390, 400);
+        g2.fillRect(0+qppy_x-10, 50+qppy_y, 400, 400);
         g2.setColor(Color.YELLOW);
 
-        g2.fillRect(0, 60, 380, 380);
+        g2.fillRect(0+qppy_x, 60+qppy_y, 380, 380);
 
         g2.setColor(Color.WHITE);
-        g2.setFont(new Font("黑体", Font.BOLD, 20));
-        g2.drawString("游戏信息：" + message, 110, 45);
+        g2.setFont(new Font("宋体", Font.BOLD, 30));
+        g2.drawString("游戏信息：" + message, qppy_x+40, qppy_y+20);
         // 输出时间信息
         g2.setFont(new Font("宋体", 0, 14));
         g2.setColor(Color.BLACK);
         // 绘制棋盘
         for (int i = 0; i < 19; i++) {
-            g2.drawLine(10, 70 + 20 * i, 370, 70 + 20 * i);
-            g2.drawLine(10 + 20 * i, 70, 10 + 20 * i, 430);
+            g2.drawLine(10+qppy_x, 70 + 20 * i+qppy_y, 370+qppy_x, 70+qppy_y + 20 * i);
+            g2.drawLine(10+qppy_x + 20 * i, 70+qppy_y, 10+qppy_x + 20 * i, 430+qppy_y);
         }
 
         // 标注点位
-        g2.fillOval(68, 128, 4, 4);
-        g2.fillOval(308, 128, 4, 4);
-        g2.fillOval(308, 368, 4, 4);
-        g2.fillOval(68, 368, 4, 4);
-        g2.fillOval(308, 248, 4, 4);
-        g2.fillOval(188, 128, 4, 4);
-        g2.fillOval(68, 248, 4, 4);
-        g2.fillOval(188, 368, 4, 4);
-        g2.fillOval(188, 248, 4, 4);
+        g2.fillOval(68+qppy_x, 128+qppy_y, 4, 4);
+        g2.fillOval(308+qppy_x, 128+qppy_y, 4, 4);
+        g2.fillOval(308+qppy_x, 368+qppy_y, 4, 4);
+        g2.fillOval(68+qppy_x, 368+qppy_y, 4, 4);
+        g2.fillOval(308+qppy_x, 248+qppy_y, 4, 4);
+        g2.fillOval(188+qppy_x, 128+qppy_y, 4, 4);
+        g2.fillOval(68+qppy_x, 248+qppy_y, 4, 4);
+        g2.fillOval(188+qppy_x, 368+qppy_y, 4, 4);
+        g2.fillOval(188+qppy_x, 248+qppy_y, 4, 4);
 
 
         for (int i = 0; i < 19; i++) {
@@ -128,15 +120,14 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
                     int tempY = j * 20 + 70;
 
                     g2.setColor(Color.BLACK);
-                    g2.drawOval(tempX - 7, tempY - 7, 14, 14);
-                    g2.fillOval(tempX - 7, tempY - 7, 14, 14);
+                    g2.fillOval(tempX - 7+qppy_x, tempY - 7+qppy_y, 14, 14);
                 }
                 if (checkerBoard.getchessman(i,j) == 0) {
                     // 白子
                     int tempX = i * 20 + 10;
                     int tempY = j * 20 + 70;
                     g2.setColor(Color.WHITE);
-                    g2.fillOval(tempX - 7, tempY - 7, 14, 14);
+                    g2.fillOval(tempX - 7+qppy_x, tempY - 7+qppy_y, 14, 14);
                 }
             }
         }
@@ -145,9 +136,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             drawCell(g2,cx,cy);
         }
 
-        g.setColor(Color.GRAY);
-        g.fillRect(OFFSET -10, 50, 15, 400);
-        g.drawImage(bi, 0+OFFSET, 0, this);
+        g.drawImage(bi, 0, 0, this);
     }
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
@@ -206,8 +195,8 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
          */
         if (canPlay == true) {
 
-            x = e.getX()-OFFSET;
-            y = e.getY();
+            x = e.getX()-qppy_x;
+            y = e.getY()-qppy_y;
             x = (x ) / 20;
             y = (y - 60) / 20;
             if(x<0||y<0||x>=19||y>=19)return;
@@ -232,8 +221,8 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
     }
     private MouseMotionListener mouseMotionListener = new MouseMotionAdapter() {
         public void mouseMoved(MouseEvent e) {
-            int x = e.getX()-OFFSET;
-            int y = e.getY();
+            int x = e.getX()-qppy_x;
+            int y = e.getY()-qppy_y;
             x = (x ) / 20;
             y = (y - 60) / 20;
             if(x<0||y<0||x>=19||y>=19)
@@ -261,10 +250,10 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
         int xx = (x ) * CELL_WIDTH+10;
         int yy = (y ) * CELL_WIDTH + 70;
         int x1, y1, x2, y2, x3, y3, x4, y4;
-        x1 = x4 = xx - CELL_WIDTH / 2;
-        x2 = x3 = xx + CELL_WIDTH / 2;
-        y1 = y2 = yy - CELL_WIDTH / 2;
-        y3 = y4 = yy + CELL_WIDTH / 2;
+        x1 = x4 = xx - CELL_WIDTH / 2+qppy_x;
+        x2 = x3 = xx + CELL_WIDTH / 2+qppy_x;
+        y1 = y2 = yy - CELL_WIDTH / 2+qppy_y;
+        y3 = y4 = yy + CELL_WIDTH / 2+qppy_y;
         g2d.setColor(Color.RED);
         g2d.drawLine(x1, y1, x1 + length, y1);
         g2d.drawLine(x1, y1, x1, y1 + length);
