@@ -12,10 +12,11 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
 
     // 取得屏幕的宽度
     private final int CELL_WIDTH = 20;
-    public static int rj;
+    public static int ISAIPLAYER=-1;
     public static final int BOARD_SIZE = 19;// 棋盘格数
-    public static final int qppy_x=60;// 棋盘偏移
-    public static final int qppy_y=50;
+    public static final int OFFSET_X =60;// 棋盘偏移
+    public static final int OFFSET_Y =50;
+    public static int SELECT=0;
     private Ai ai;
     private int cx=-1, cy=-1;
     int width = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -25,11 +26,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
     // 保存棋子的坐标
     int x = 0;
     int y = 0;
-    int color;
-    // 保存之前下过的全部棋子的坐标
-    // 其中数据内容 0： 表示这个点并没有棋子， 1： 表示这个点是黑子， 2：表示这个点是白子
-    // 标识当前应该黑棋还是白棋下下一步
-    boolean isBlack = true;
+    int  color;
     // 标识当前游戏是否可以继续
     boolean canPlay = true;
     // 保存显示的提示信息
@@ -41,12 +38,11 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
     // 保存黑方与白方的剩余时间
     // 保存双方剩余时间的显示信息
     CheckerBoard checkerBoard;
-    public MyFrame(CheckerBoard checkerBoard,int rj) {
+    public MyFrame() {
         // 设置标题
-        this.rj=rj;
         color=1;
         ai=new Ai();
-        this.checkerBoard=checkerBoard;
+        this.checkerBoard=new CheckerBoard(BOARD_SIZE);
         this.setTitle("五子棋");
         // 设置窗体大小
         this.setSize(500, 550);
@@ -67,73 +63,90 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
 
         // 刷新屏幕,防止开始游戏时出现无法显示的情况.
         this.repaint();
-        if(rj==1&&color==1)
+        if(ISAIPLAYER ==1&&color==1)
         {
-
             putdown(9,9);
-
         }
 
     }
 
     public void paint(Graphics g) {
+
         // 双缓冲技术防止屏幕闪烁
+
         BufferedImage bi = new BufferedImage(500, 500,
                 BufferedImage.TYPE_INT_RGB);
         Graphics g2 = bi.createGraphics();
+        if(SELECT==3)
+        {
+            g2.setColor(Color.GRAY);
+            g2.fillRect(0+ OFFSET_X -10, 50+ OFFSET_Y, 400, 400);
+            g2.setColor(Color.YELLOW);
 
-        g2.setColor(Color.GRAY);
-        g2.fillRect(0+qppy_x-10, 50+qppy_y, 400, 400);
-        g2.setColor(Color.YELLOW);
+            g2.fillRect(0+ OFFSET_X, 60+ OFFSET_Y, 380, 380);
 
-        g2.fillRect(0+qppy_x, 60+qppy_y, 380, 380);
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("宋体", Font.BOLD, 30));
+            g2.drawString("游戏信息：" + message, OFFSET_X +40, OFFSET_Y +20);
+            // 输出时间信息
+            g2.setFont(new Font("宋体", 0, 14));
+            g2.setColor(Color.BLACK);
+            // 绘制棋盘
+            for (int i = 0; i < BOARD_SIZE; i++) {
+                g2.drawLine(10+ OFFSET_X, 70 + 20 * i+ OFFSET_Y, 370+ OFFSET_X, 70+ OFFSET_Y + 20 * i);
+                g2.drawLine(10+ OFFSET_X + 20 * i, 70+ OFFSET_Y, 10+ OFFSET_X + 20 * i, 430+ OFFSET_Y);
+            }
 
-        g2.setColor(Color.WHITE);
-        g2.setFont(new Font("宋体", Font.BOLD, 30));
-        g2.drawString("游戏信息：" + message, qppy_x+40, qppy_y+20);
-        // 输出时间信息
-        g2.setFont(new Font("宋体", 0, 14));
-        g2.setColor(Color.BLACK);
-        // 绘制棋盘
-        for (int i = 0; i < 19; i++) {
-            g2.drawLine(10+qppy_x, 70 + 20 * i+qppy_y, 370+qppy_x, 70+qppy_y + 20 * i);
-            g2.drawLine(10+qppy_x + 20 * i, 70+qppy_y, 10+qppy_x + 20 * i, 430+qppy_y);
-        }
-
-        // 标注点位
-        g2.fillOval(68+qppy_x, 128+qppy_y, 4, 4);
-        g2.fillOval(308+qppy_x, 128+qppy_y, 4, 4);
-        g2.fillOval(308+qppy_x, 368+qppy_y, 4, 4);
-        g2.fillOval(68+qppy_x, 368+qppy_y, 4, 4);
-        g2.fillOval(308+qppy_x, 248+qppy_y, 4, 4);
-        g2.fillOval(188+qppy_x, 128+qppy_y, 4, 4);
-        g2.fillOval(68+qppy_x, 248+qppy_y, 4, 4);
-        g2.fillOval(188+qppy_x, 368+qppy_y, 4, 4);
-        g2.fillOval(188+qppy_x, 248+qppy_y, 4, 4);
+            // 标注点位
+            g2.fillOval(68+ OFFSET_X, 128+ OFFSET_Y, 4, 4);
+            g2.fillOval(308+ OFFSET_X, 128+ OFFSET_Y, 4, 4);
+            g2.fillOval(308+ OFFSET_X, 368+ OFFSET_Y, 4, 4);
+            g2.fillOval(68+ OFFSET_X, 368+ OFFSET_Y, 4, 4);
+            g2.fillOval(308+ OFFSET_X, 248+ OFFSET_Y, 4, 4);
+            g2.fillOval(188+ OFFSET_X, 128+ OFFSET_Y, 4, 4);
+            g2.fillOval(68+ OFFSET_X, 248+ OFFSET_Y, 4, 4);
+            g2.fillOval(188+ OFFSET_X, 368+ OFFSET_Y, 4, 4);
+            g2.fillOval(188+ OFFSET_X, 248+ OFFSET_Y, 4, 4);
 
 
-        for (int i = 0; i < 19; i++) {
-            for (int j = 0; j < 19; j++) {
-                if (checkerBoard.getchessman(i,j) == 1) {
-                    // 黑子
-                    int tempX = i * 20 + 10;
-                    int tempY = j * 20 + 70;
+            for (int i = 0; i < BOARD_SIZE; i++) {
+                for (int j = 0; j < BOARD_SIZE; j++) {
+                    if (checkerBoard.getchessman(i,j) == 1) {
+                        // 黑子
+                        int tempX = i * 20 + 10;
+                        int tempY = j * 20 + 70;
 
-                    g2.setColor(Color.BLACK);
-                    g2.fillOval(tempX - 7+qppy_x, tempY - 7+qppy_y, 14, 14);
-                }
-                if (checkerBoard.getchessman(i,j) == 0) {
-                    // 白子
-                    int tempX = i * 20 + 10;
-                    int tempY = j * 20 + 70;
-                    g2.setColor(Color.WHITE);
-                    g2.fillOval(tempX - 7+qppy_x, tempY - 7+qppy_y, 14, 14);
+                        g2.setColor(Color.BLACK);
+                        g2.fillOval(tempX - 7+ OFFSET_X, tempY - 7+ OFFSET_Y, 14, 14);
+                    }
+                    if (checkerBoard.getchessman(i,j) == 0) {
+                        // 白子
+                        int tempX = i * 20 + 10;
+                        int tempY = j * 20 + 70;
+                        g2.setColor(Color.WHITE);
+                        g2.fillOval(tempX - 7+ OFFSET_X, tempY - 7+ OFFSET_Y, 14, 14);
+                    }
                 }
             }
+            if(cx!=-1&&cy!=-1)
+            {
+                drawCell(g2,cx,cy);
+            }
         }
-        if(cx!=-1&&cy!=-1)
+        else
         {
-            drawCell(g2,cx,cy);
+
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("宋体", Font.BOLD, 30));
+            g2.drawString("请选择游戏模式", OFFSET_X +40, OFFSET_Y +20);
+            if(SELECT==1) g2.setColor(Color.MAGENTA);
+            g2.setFont(new Font("宋体", Font.BOLD, 30));
+            g2.drawString("1.人机模式", OFFSET_X +60, OFFSET_Y +120);
+            if(SELECT==2) g2.setColor(Color.MAGENTA);
+            else g2.setColor(Color.WHITE);
+            g2.setFont(new Font("宋体", Font.BOLD, 30));
+            g2.drawString("2.玩家对战", OFFSET_X +60, OFFSET_Y +160);
+
         }
 
         g.drawImage(bi, 0, 0, this);
@@ -155,23 +168,26 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
     public void putdown(int x,int y)
     {
             if(checkerBoard.getchessman(x,y)!=-1)return;
-            int pd=checkerBoard.move(x,y,color);
+            int pd=checkerBoard.move(x,y);
             color++;
             color%=2;
             if(pd>=0)
             {
-                System.out.println((pd==1?"黑子":"白子")+"赢了");
-                JOptionPane.showMessageDialog(this, "游戏结束,"
-                        + (pd==1?"黑":"白") + "方获胜！");
+                if(pd==3)
+                {
+                    System.out.println("平局");
+                    JOptionPane.showMessageDialog(this, "游戏结束,平局！");
+                }
+                else
+                {
+                    System.out.println((pd==1?"黑子":"白子")+"赢了");
+                    JOptionPane.showMessageDialog(this, "游戏结束," + (pd==1?"黑":"白") + "方获胜！");
+                }
                 checkerBoard.reset();
                 color=1;
                 ai=new Ai();
-                if(rj==1&&color==1)
-                {
-
-                    putdown(9,9);
-
-                }
+                SELECT=0;
+                ISAIPLAYER=-1;
             }
             else if(color==0)
             {
@@ -193,16 +209,27 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
         /*
          * System.out.println("X:"+e.getX()); System.out.println("Y:"+e.getY());
          */
+        if(SELECT!=3)
+        {
+            if(SELECT==0)return;
+            ISAIPLAYER=SELECT;
+            SELECT=3;
+            if(ISAIPLAYER ==1&&color==1)
+            {
+                putdown(9,9);
+            }
+            return;
+        }
         if (canPlay == true) {
 
-            x = e.getX()-qppy_x;
-            y = e.getY()-qppy_y;
+            x = e.getX()- OFFSET_X;
+            y = e.getY()- OFFSET_Y;
             x = (x ) / 20;
             y = (y - 60) / 20;
-            if(x<0||y<0||x>=19||y>=19)return;
+            if(x<0||y<0||x>=BOARD_SIZE||y>=BOARD_SIZE)return;
             putdown(x,y);
             repa();
-            if(rj==1&&color==1)
+            if(ISAIPLAYER ==1&&color==1)
             {
                 long st= System.currentTimeMillis();
                 while(System.currentTimeMillis()-st<100);
@@ -221,11 +248,27 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
     }
     private MouseMotionListener mouseMotionListener = new MouseMotionAdapter() {
         public void mouseMoved(MouseEvent e) {
-            int x = e.getX()-qppy_x;
-            int y = e.getY()-qppy_y;
+            if(SELECT!=3)
+            {
+                int x = e.getX();
+                int y = e.getY();
+                int xz;
+                if(x>OFFSET_X +60&&y>OFFSET_Y +80&&x<OFFSET_X +260&&y< OFFSET_Y +120)xz=1;
+                else if(x>OFFSET_X +60&&y>OFFSET_Y +120&&x<OFFSET_X +260&&y< OFFSET_Y +160)xz=2;
+                else xz=0;
+                if(xz!=SELECT)
+                {
+                    SELECT=xz;
+                    repa();
+                }
+                return;
+            }
+
+            int x = e.getX()- OFFSET_X;
+            int y = e.getY()- OFFSET_Y;
             x = (x ) / 20;
             y = (y - 60) / 20;
-            if(x<0||y<0||x>=19||y>=19)
+            if(x<0||y<0||x>=BOARD_SIZE||y>=BOARD_SIZE)
             {
                 cx=-1;
                 cy=-1;
@@ -250,10 +293,10 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
         int xx = (x ) * CELL_WIDTH+10;
         int yy = (y ) * CELL_WIDTH + 70;
         int x1, y1, x2, y2, x3, y3, x4, y4;
-        x1 = x4 = xx - CELL_WIDTH / 2+qppy_x;
-        x2 = x3 = xx + CELL_WIDTH / 2+qppy_x;
-        y1 = y2 = yy - CELL_WIDTH / 2+qppy_y;
-        y3 = y4 = yy + CELL_WIDTH / 2+qppy_y;
+        x1 = x4 = xx - CELL_WIDTH / 2+ OFFSET_X;
+        x2 = x3 = xx + CELL_WIDTH / 2+ OFFSET_X;
+        y1 = y2 = yy - CELL_WIDTH / 2+ OFFSET_Y;
+        y3 = y4 = yy + CELL_WIDTH / 2+ OFFSET_Y;
         g2d.setColor(Color.RED);
         g2d.drawLine(x1, y1, x1 + length, y1);
         g2d.drawLine(x1, y1, x1, y1 + length);

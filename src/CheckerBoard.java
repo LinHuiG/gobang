@@ -1,13 +1,15 @@
 public class CheckerBoard {
     private int[][] map;//-1是无人 0是白，1是黑，黑先手
     private int count;
-    CheckerBoard()
+    private int BOARD_SIZE;// 棋盘格数
+    CheckerBoard(int BOARD_SIZE)
     {
         count=1;
-        map=new int[19][19];
-        for (int i=0;i<19;i++)
+        this.BOARD_SIZE = BOARD_SIZE;
+        map=new int[BOARD_SIZE][BOARD_SIZE];
+        for (int i=0;i<BOARD_SIZE;i++)
         {
-            for(int j=0;j<19;j++)
+            for(int j=0;j<BOARD_SIZE;j++)
             {
                 map[i][j]=-1;
             }
@@ -20,9 +22,9 @@ public class CheckerBoard {
     public void reset()
     {
         count=1;
-        for (int i=0;i<19;i++)
+        for (int i=0;i<BOARD_SIZE;i++)
         {
-            for(int j=0;j<19;j++)
+            for(int j=0;j<BOARD_SIZE;j++)
             {
                 map[i][j]=-1;
             }
@@ -45,7 +47,7 @@ public class CheckerBoard {
             ans++;
             x--;
             y--;
-            if(x<0||y<0||x>=19||y>=19)break;
+            if(x<0||y<0||x>=BOARD_SIZE||y>=BOARD_SIZE)break;
         }
         x=xx;
         y=yy;
@@ -54,7 +56,7 @@ public class CheckerBoard {
             ans++;
             x++;
             y++;
-            if(x<0||y<0||x>=19||y>=19)break;
+            if(x<0||y<0||x>=BOARD_SIZE||y>=BOARD_SIZE)break;
         }
         ans--;
         return ans;
@@ -68,7 +70,7 @@ public class CheckerBoard {
             ans++;
             x++;
             y--;
-            if(x<0||y<0||x>=19||y>=19)break;
+            if(x<0||y<0||x>=BOARD_SIZE||y>=BOARD_SIZE)break;
         }
         x=xx;
         y=yy;
@@ -77,7 +79,7 @@ public class CheckerBoard {
             ans++;
             x--;
             y++;
-            if(x<0||y<0||x>=19||y>=19)break;
+            if(x<0||y<0||x>=BOARD_SIZE||y>=BOARD_SIZE)break;
         }
         ans--;
         return ans;
@@ -90,14 +92,14 @@ public class CheckerBoard {
         {
             ans++;
             y--;
-            if(y<0||y>=19)break;
+            if(y<0||y>=BOARD_SIZE)break;
         }
         y=yy;
         while (map[x][y]==color)
         {
             ans++;
             y++;
-            if(y<0||y>=19)break;
+            if(y<0||y>=BOARD_SIZE)break;
         }
         ans--;
         return ans;
@@ -110,27 +112,24 @@ public class CheckerBoard {
         {
             ans++;
             x--;
-            if(x<0||x>=19)break;
+            if(x<0||x>=BOARD_SIZE)break;
         }
         x=xx;
         while (map[x][y]==color)
         {
             ans++;
             x++;
-            if(x<0||x>=19)break;
+            if(x<0||x>=BOARD_SIZE)break;
         }
         ans--;
         return ans;
     }
     boolean isWin(int x,int y)
     {
-        if(x>=19||y>=19||x<0||y<0)return false;
+        if(x>=BOARD_SIZE||y>=BOARD_SIZE||x<0||y<0)return false;
         int color=count%2;
-        count++;
-
         if(map[x][y]!=-1)
         {
-            count--;
             return false;
         }
         map[x][y]=color;
@@ -154,34 +153,40 @@ public class CheckerBoard {
             map[x][y]=-1;
             return true;
         }
-
-
             map[x][y]=-1;
             return false;
 
     }
-    int move(int x,int y,int color)
+    boolean isTide()
     {
-        if(x>=19||y>=19||x<0||y<0)return 0;
-        count++;
+        for (int i=0;i<BOARD_SIZE;i++)
+        {
+            for(int j=0;j<BOARD_SIZE;j++)
+            {
+                if(map[i][j]==-1)return false;
+            }
+        }
+        return true;
+    }
+    int move(int x,int y)
+    {
+        if(x>=BOARD_SIZE||y>=BOARD_SIZE||x<0||y<0)return -1;
 
         if(map[x][y]!=-1)
         {
-            count--;
             return -1;
         }
-        map[x][y]=color;
-        if(Continuum1(x,y,color)>=5)return color;
-        if(Continuum2(x,y,color)>=5)return color;
-        if(Continuum3(x,y,color)>=5)return color;
-        if(Continuum4(x,y,color)>=5)return color;
+        if(isWin(x,y))return count%2;
+        map[x][y]=count%2;
+        count++;
+        if(isTide())return 3;
         return -2;
     }
     void pf()
     {
-        for (int i=0;i<19;i++)
+        for (int i=0;i<BOARD_SIZE;i++)
         {
-            for(int j=0;j<19;j++)
+            for(int j=0;j<BOARD_SIZE;j++)
             {
                 System.out.print(map[i][j]+" ");
             }
