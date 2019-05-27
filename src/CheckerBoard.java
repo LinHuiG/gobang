@@ -1,3 +1,5 @@
+
+
 public class CheckerBoard {
     private int[][] map;//-1是无人 0是白，1是黑，黑先手
     private int count;
@@ -176,8 +178,12 @@ public class CheckerBoard {
         {
             return -1;
         }
-        if(isWin(x,y))return count%2;
+        if(isWin(x,y))
+        {
+            return count%2;
+        }
         map[x][y]=count%2;
+        MyFrame.brain.bd.putChess(x,y);
         count++;
         if(isTide())return 3;
         return -2;
