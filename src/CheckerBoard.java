@@ -81,6 +81,8 @@ public class CheckerBoard implements Comparable<CheckerBoard>{
             for(int j=0;j<this.BOARD_SIZE;j++)
             {
                 ans[i][j]=map[i][j];
+                if(ans[i][j]==-1)ans[i][j]=0;
+                else if(ans[i][j]==0)ans[i][j]=2;
             }
         }
         return ans;
