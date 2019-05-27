@@ -62,6 +62,7 @@ public class GetScore {
                     state[level.index]++;
                     ans=Math.max(ans,level.score);
                 }
+
             }
         }
         int score=0;
