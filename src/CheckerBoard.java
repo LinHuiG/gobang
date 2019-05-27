@@ -75,7 +75,15 @@ public class CheckerBoard implements Comparable<CheckerBoard>{
         }
     }
     public int[][] getMap() {
-        return map;
+        int[][] ans=new int[BOARD_SIZE][BOARD_SIZE];
+        for (int i=0;i<this.BOARD_SIZE;i++)
+        {
+            for(int j=0;j<this.BOARD_SIZE;j++)
+            {
+                ans[i][j]=map[i][j];
+            }
+        }
+        return ans;
     }
 
     int getchessman(int x, int y)
@@ -229,17 +237,6 @@ public class CheckerBoard implements Comparable<CheckerBoard>{
         count++;
         if(isTide())return 3;
         return -2;
-    }
-    void pf()
-    {
-        for (int i=0;i<BOARD_SIZE;i++)
-        {
-            for(int j=0;j<BOARD_SIZE;j++)
-            {
-                System.out.print(map[i][j]+" ");
-            }
-            System.out.println(" ");
-        }
     }
     @Override
     public int compareTo(CheckerBoard o) {

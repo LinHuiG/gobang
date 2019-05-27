@@ -43,7 +43,7 @@ public class Brain {
             } else if (sorted[i].getDefence() >= Board.Level.ALIVE_4.score) {
                 score = INFINITY;
             } else {
-                score = alpha_beta(depth + 1, temp, alpha, beta);
+                score = alpha_beta(depth + 1, temp, alpha,beta);
             }
             temp = new Board(board);
 
