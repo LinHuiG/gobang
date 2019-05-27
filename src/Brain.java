@@ -11,6 +11,7 @@ public class Brain {
     private int level;// 深度
     private int node;// 每层结点
 
+
     public Brain() {
         this.bd = new Board();
         this.level = 3;
