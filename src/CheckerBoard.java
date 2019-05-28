@@ -3,7 +3,7 @@ import java.util.Comparator;
 public class CheckerBoard implements Comparable<CheckerBoard>{
     private int[][] map;//-1是无人 0是白，1是黑，黑先手
     private int count;
-    private int BOARD_SIZE;// 棋盘格数
+    public int BOARD_SIZE;// 棋盘格数
     private int prx;
     private int pry;
     private int sorce;
@@ -25,12 +25,12 @@ public class CheckerBoard implements Comparable<CheckerBoard>{
     {
         this.count=checkerBoard.count;
         this.BOARD_SIZE =checkerBoard. BOARD_SIZE;
-        map=new int[this.BOARD_SIZE][this.BOARD_SIZE];
+        this.map=new int[this.BOARD_SIZE][this.BOARD_SIZE];
         for (int i=0;i<this.BOARD_SIZE;i++)
         {
             for(int j=0;j<this.BOARD_SIZE;j++)
             {
-                map[i][j]=checkerBoard.getchessman(i,j);
+                this.map[i][j]=checkerBoard.getchessman(i,j);
             }
         }
     }
@@ -235,7 +235,6 @@ public class CheckerBoard implements Comparable<CheckerBoard>{
             return count%2;
         }
         map[x][y]=count%2;
-        MyFrame.brain.bd.putChess(x,y);
         count++;
         if(isTide())return 3;
         return -2;

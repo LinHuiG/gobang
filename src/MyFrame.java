@@ -17,7 +17,6 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
     public static final int OFFSET_X =60;// 棋盘偏移
     public static final int OFFSET_Y =50;
     public static int SELECT=0;
-    public  static Brain brain;
     private int cx=-1, cy=-1;
     int width = Toolkit.getDefaultToolkit().getScreenSize().width;
     // 取得屏幕的高度
@@ -41,7 +40,6 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
     public MyFrame() {
         // 设置标题
         color=1;
-        brain=new Brain();
         this.checkerBoard=new CheckerBoard(BOARD_SIZE);
         this.setTitle("五子棋");
         // 设置窗体大小
@@ -186,7 +184,6 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
                 }
                 checkerBoard.reset();
                 color=1;
-                brain=new Brain();
                 SELECT=0;
                 ISAIPLAYER=-1;
             }
@@ -234,7 +231,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             {
                 long st= System.currentTimeMillis();
                 while(System.currentTimeMillis()-st<100);
-                int []ans=brain.findTreeBestStep();
+                int []ans=GetMove.getMoveSimple(checkerBoard);
                 x=ans[0];
                 y=ans[1];
                 putdown(x,y);

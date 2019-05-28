@@ -36,11 +36,11 @@ public class GetScore {
     static public String getSeq(int map[][],int x,int y,char p,int dx,int dy){
         String seq="";
         map[x][y]=p;
-        while (x-dx>=1&&x-dx<=size&&y-dy>=1&&y-dy<=size){
+        while (x-dx>=0&&x-dx<size&&y-dy>=0&&y-dy<size){
             x-=dx;
             y-=dy;
         }
-        while(x>=1&&x<=size&&y>=1&&y<=size){
+        while(x>=0&&x<size&&y>=0&&y<size){
             seq=seq+map[x][y];
             x+=dx;
             y+=dy;
@@ -83,10 +83,13 @@ public class GetScore {
         ans=Math.max(ans,score);
         return ans;
     }
-    static int getScorce(){
-
+    static int getScorce(int map[][],int x,int y){
+        int d=Math.max(Math.abs(x-size/2),Math.abs(y-size/2));
         int ans=0;
-
+        int attack=getPlayerScorce(map,x,y,'1');
+        int defence=getPlayerScorce(map,x,y,'2');
+        System.out.println(attack+" "+defence);
+        ans=defence+attack+19-d;
         return ans;
     }
 }
