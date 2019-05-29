@@ -130,6 +130,10 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             {
                 drawCell(g2,cx,cy);
             }
+            if(checkerBoard.getPrx()!=-1&&checkerBoard.getPry()!=-1)
+            {
+                drawCell(g2,checkerBoard.getPrx(),checkerBoard.getPry());
+            }
         }
         else
         {
@@ -196,7 +200,6 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
                 message = "轮到黑方";
             }
 
-
         // 刷新屏幕,防止开始游戏时出现无法显示的情况.
         this.repaint();
 
@@ -234,6 +237,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
                 int []ans=GetMove.getMoveBydfs(checkerBoard);
                 x=ans[0];
                 y=ans[1];
+                System.out.println(x+" "+y);
                 putdown(x,y);
 
             }

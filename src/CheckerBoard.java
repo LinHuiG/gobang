@@ -1,12 +1,14 @@
+import java.io.*;
 import java.util.Comparator;
 
-public class CheckerBoard implements Comparable<CheckerBoard>{
+public class CheckerBoard  implements Comparable<CheckerBoard>,Cloneable{
     private int[][] map;//-1是无人 0是白，1是黑，黑先手
     private int count;
     public int BOARD_SIZE;// 棋盘格数
     private int prx;
     private int pry;
     private int score;
+
 
     public CheckerBoard(int BOARD_SIZE)
     {
@@ -21,6 +23,7 @@ public class CheckerBoard implements Comparable<CheckerBoard>{
             }
         }
     }
+
     public CheckerBoard(CheckerBoard checkerBoard)
     {
         this.count=checkerBoard.count;
@@ -180,11 +183,16 @@ public class CheckerBoard implements Comparable<CheckerBoard>{
     }
     boolean isWin(int x,int y)
     {
-        if(x>=BOARD_SIZE||y>=BOARD_SIZE||x<0||y<0)return false;
+
         int color=count%2;
+        return isWin(x,y,color);
+    }
+    boolean isWin(int x,int y,int color)
+    {
+        if(x>=BOARD_SIZE||y>=BOARD_SIZE||x<0||y<0)return false;
         if(map[x][y]!=-1)
         {
-            return false;
+            //return false;
         }
         map[x][y]=color;
         if(Continuum1(x,y,color)>=5)
@@ -230,6 +238,8 @@ public class CheckerBoard implements Comparable<CheckerBoard>{
         {
             return -1;
         }
+        prx=x;
+        pry=y;
         if(isWin(x,y))
         {
             return count%2;
