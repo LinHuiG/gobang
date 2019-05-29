@@ -6,7 +6,7 @@ public class CheckerBoard implements Comparable<CheckerBoard>{
     public int BOARD_SIZE;// 棋盘格数
     private int prx;
     private int pry;
-    private int sorce;
+    private int score;
 
     public CheckerBoard(int BOARD_SIZE)
     {
@@ -51,12 +51,12 @@ public class CheckerBoard implements Comparable<CheckerBoard>{
         this.pry = pry;
     }
 
-    public int getSorce() {
-        return sorce;
+    public int getScore() {
+        return score;
     }
 
-    public void setSorce(int sorce) {
-        this.sorce = sorce;
+    public void setScore(int sorce) {
+        this.score = sorce;
     }
 
     int getCount()
@@ -241,11 +241,11 @@ public class CheckerBoard implements Comparable<CheckerBoard>{
     }
     @Override
     public int compareTo(CheckerBoard o) {
-        return Integer.compare(this.getSorce(),o.getSorce());
+        return Integer.compare(this.getScore(),o.getScore());
     }
     public static Comparator<CheckerBoard> cmpfx = new Comparator<CheckerBoard>() {
         public int compare(CheckerBoard i1, CheckerBoard i2) {
-            return i2.getSorce()-i1.getSorce();
+            return i2.getScore()-i1.getScore();
         }
     };
 }

@@ -16,7 +16,7 @@ public class GetMove {
                     CheckerBoard newboard=new CheckerBoard(board);
                     newboard.setPrx(i);
                     newboard.setPry(j);
-                    newboard.setSorce(GetScore.getScorce(newboard.getMap(),i,j));
+                    newboard.setScore(GetScore.getScorce(newboard.getMap(),i,j));
                     vector.add(newboard);
                 }
             }
