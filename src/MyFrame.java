@@ -231,7 +231,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             {
                 long st= System.currentTimeMillis();
                 while(System.currentTimeMillis()-st<100);
-                int []ans=GetMove.getMoveSimple(checkerBoard);
+                int []ans=GetMove.getMoveBydfs(checkerBoard);
                 x=ans[0];
                 y=ans[1];
                 putdown(x,y);

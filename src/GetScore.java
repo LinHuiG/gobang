@@ -56,7 +56,7 @@ public class GetScore {
         for(int i=0;i<19;i++)state[i]=0;
         for (int i=0;i<8;i++){
             String seq=getSeq(map,x,y,p,dx[i],dy[i]);
-            System.out.println(x+" "+y+" "+seq);
+            //System.out.println(x+" "+y+" "+seq);
             for (Level level:Level.values()){
                 String pl=p+"";
                 if(Pattern.matches(".*("+level.regex[Integer.parseInt(pl)-1]+").*",seq)){
@@ -89,7 +89,7 @@ public class GetScore {
         int ans=0;
         int attack=getPlayerScorce(map,x,y,1);
         int defence=getPlayerScorce(map,x,y,2);
-        System.out.println(attack+" "+defence);
+        //System.out.println(attack+" "+defence);
         ans=defence+attack+19-d;
         return ans;
     }
