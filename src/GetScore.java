@@ -33,7 +33,7 @@ public class GetScore {
     };
     static int []dx={0,0,-1,1,1,-1,-1,1};
     static int []dy={1,-1,0,0,-1,1,-1,1};
-    static public String getSeq(int map[][],int x,int y,char p,int dx,int dy){
+    static public String getSeq(int map[][],int x,int y,int p,int dx,int dy){
         String seq="";
         map[x][y]=p;
         while (x-dx>=0&&x-dx<size&&y-dy>=0&&y-dy<size){
@@ -50,15 +50,16 @@ public class GetScore {
     static void setsize(int s){
         size=s;
     }
-    static int getPlayerScorce(int map[][],int x,int y,char p){
+    static int getPlayerScorce(int map[][],int x,int y,int p){
         int state[]=new int[20];
         int ans=0;
         for(int i=0;i<19;i++)state[i]=0;
         for (int i=0;i<8;i++){
             String seq=getSeq(map,x,y,p,dx[i],dy[i]);
+            System.out.println(x+" "+y+" "+seq);
             for (Level level:Level.values()){
                 String pl=p+"";
-                if(Pattern.matches(level.regex[Integer.parseInt(pl)-1],seq)){
+                if(Pattern.matches(".*("+level.regex[Integer.parseInt(pl)-1]+").*",seq)){
                     state[level.index]++;
                     ans=Math.max(ans,level.score);
                 }
@@ -86,8 +87,8 @@ public class GetScore {
     static int getScorce(int map[][],int x,int y){
         int d=Math.max(Math.abs(x-size/2),Math.abs(y-size/2));
         int ans=0;
-        int attack=getPlayerScorce(map,x,y,'1');
-        int defence=getPlayerScorce(map,x,y,'2');
+        int attack=getPlayerScorce(map,x,y,1);
+        int defence=getPlayerScorce(map,x,y,2);
         System.out.println(attack+" "+defence);
         ans=defence+attack+19-d;
         return ans;
