@@ -66,7 +66,7 @@ public class GetMove {
                 if (a>=b)return a;
             }
             else {
-                ans = Math.max(ans, score);
+                ans = Math.min(ans, score);
                 b = Math.min(b, score);
                 if (a >= b) return b;
             }
