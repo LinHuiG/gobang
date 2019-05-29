@@ -1,15 +1,16 @@
 import java.io.*;
 import java.util.Comparator;
 
-public class CheckerBoard  implements Comparable<CheckerBoard>,Cloneable{
+public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cloneable{
     private int[][] map;//-1是无人 0是白，1是黑，黑先手
     private int count;
     public int BOARD_SIZE;// 棋盘格数
-    private int prx;
-    private int pry;
+    private int prx=-1;
+    private int pry=-1;
     private int score;
-
+    public int isAi=0;
     String path="wzq.mo";
+
 
     public CheckerBoard(int BOARD_SIZE)
     {
@@ -27,6 +28,41 @@ public class CheckerBoard  implements Comparable<CheckerBoard>,Cloneable{
 
     public CheckerBoard(String test)
     {
+        File aFile=new File(path);
+        FileInputStream fileInputStream= null;
+        try {
+            fileInputStream = new FileInputStream(aFile);
+            ObjectInputStream objectInputStream=new ObjectInputStream(fileInputStream);
+            CheckerBoard checkerBoard=(CheckerBoard) objectInputStream.readObject();
+            this.count=checkerBoard.count;
+            this.BOARD_SIZE =checkerBoard. BOARD_SIZE;
+            this.map=new int[this.BOARD_SIZE][this.BOARD_SIZE];
+            this.prx=checkerBoard.prx;
+            this.pry=checkerBoard.pry;
+            this.score=checkerBoard.score;
+            this.isAi=checkerBoard.isAi;
+            for (int i=0;i<this.BOARD_SIZE;i++)
+            {
+                for(int j=0;j<this.BOARD_SIZE;j++)
+                {
+                    this.map[i][j]=checkerBoard.getchessman(i,j);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            count=1;
+            this.BOARD_SIZE = 19;
+            prx=pry=-1;
+            map=new int[BOARD_SIZE][BOARD_SIZE];
+            for (int i=0;i<BOARD_SIZE;i++)
+            {
+                for(int j=0;j<BOARD_SIZE;j++)
+                {
+                    map[i][j]=-1;
+                }
+            }
+        }
 
     }
     public void save()

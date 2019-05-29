@@ -18,6 +18,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
     public static final int OFFSET_Y =50;
     public static int SELECT=0;
     private int cx=-1, cy=-1;
+    boolean csms = false;
     int width = Toolkit.getDefaultToolkit().getScreenSize().width;
     // 取得屏幕的高度
     int height = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -149,10 +150,10 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             g2.setFont(new Font("宋体", Font.BOLD, 30));
             g2.drawString("2.玩家对战", OFFSET_X +60, OFFSET_Y +160);
 
-            if(SELECT==-100) g2.setColor(Color.MAGENTA);
+            if(SELECT==-1) g2.setColor(Color.MAGENTA);
             else g2.setColor(Color.WHITE);
             g2.setFont(new Font("宋体", Font.BOLD, 30));
-            g2.drawString("3.测试模式", OFFSET_X +60, OFFSET_Y +200);
+            g2.drawString("3.继续游戏", OFFSET_X +60, OFFSET_Y +200);
 
         }
 
@@ -179,6 +180,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             repa();
             color++;
             color%=2;
+        checkerBoard.save();
             if(pd>=0)
             {
                 if(pd==3)
@@ -192,6 +194,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
                     JOptionPane.showMessageDialog(this, "游戏结束," + (pd==1?"黑":"白") + "方获胜！");
                 }
                 checkerBoard.reset();
+                
                 color=1;
                 SELECT=0;
                 ISAIPLAYER=-1;
@@ -218,14 +221,29 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
         if(SELECT!=3)
         {
             if(SELECT==0)return;
-            if(SELECT==-100)
+            if(SELECT==-1)
             {
-                ISAIPLAYER=1;
-                SELECT=3;
+
                 checkerBoard=new CheckerBoard("cs");
+                ISAIPLAYER=checkerBoard.isAi;
+                SELECT=3;
+                csms = true;
+                color = checkerBoard.getCount() % 2;
+                if (ISAIPLAYER == 1 && color == 1) {
+                    if (checkerBoard.getchessman(9, 9) == -1) {
+                        putdown(9, 9);
+                    } else {
+                        int[] ans = GetMove.getMoveBydfs(checkerBoard);
+                        x = ans[0];
+                        y = ans[1];
+                        putdown(x, y);
+                    }
+                }
+
                 return;
             }
             ISAIPLAYER=SELECT;
+            checkerBoard.isAi=ISAIPLAYER;
             SELECT=3;
             if(ISAIPLAYER ==1&&color==1)
             {
@@ -244,8 +262,6 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             repa();
             if(ISAIPLAYER ==1&&color==1)
             {
-                long st= System.currentTimeMillis();
-                while(System.currentTimeMillis()-st<100);
                 int []ans=GetMove.getMoveBydfs(checkerBoard);
                 x=ans[0];
                 y=ans[1];
@@ -269,7 +285,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
                 int xz;
                 if(x>OFFSET_X +60&&y>OFFSET_Y +80&&x<OFFSET_X +260&&y< OFFSET_Y +120)xz=1;
                 else if(x>OFFSET_X +60&&y>OFFSET_Y +120&&x<OFFSET_X +260&&y< OFFSET_Y +160)xz=2;
-                else if(x>OFFSET_X +60&&y>OFFSET_Y +160&&x<OFFSET_X +260&&y< OFFSET_Y +200)xz=-100;
+                else if(x>OFFSET_X +60&&y>OFFSET_Y +160&&x<OFFSET_X +260&&y< OFFSET_Y +200)xz=-1;
                 else xz=0;
                 if(xz!=SELECT)
                 {
