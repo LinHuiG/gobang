@@ -9,6 +9,7 @@ public class CheckerBoard  implements Comparable<CheckerBoard>,Cloneable{
     private int pry;
     private int score;
 
+    String path="wzq.mo";
 
     public CheckerBoard(int BOARD_SIZE)
     {
@@ -22,6 +23,46 @@ public class CheckerBoard  implements Comparable<CheckerBoard>,Cloneable{
                 map[i][j]=-1;
             }
         }
+    }
+
+    public CheckerBoard(String test)
+    {
+
+    }
+    public void save()
+    {
+        FileOutputStream fileOutputStream=null;
+        try {
+            File initFile=new File(path);
+            fileOutputStream = new FileOutputStream(initFile);
+            ObjectOutputStream objectOutputStream=new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+            System.out.println("保存成功");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            System.out.println("保存失败，FileNotFoundException");
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.out.println("保存失败，IOException");
+        }finally {
+            if(fileOutputStream!=null)
+            {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     public CheckerBoard(CheckerBoard checkerBoard)

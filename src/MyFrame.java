@@ -149,6 +149,11 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             g2.setFont(new Font("宋体", Font.BOLD, 30));
             g2.drawString("2.玩家对战", OFFSET_X +60, OFFSET_Y +160);
 
+            if(SELECT==-100) g2.setColor(Color.MAGENTA);
+            else g2.setColor(Color.WHITE);
+            g2.setFont(new Font("宋体", Font.BOLD, 30));
+            g2.drawString("3.测试模式", OFFSET_X +60, OFFSET_Y +200);
+
         }
 
         g.drawImage(bi, 0, 0, this);
@@ -213,6 +218,13 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
         if(SELECT!=3)
         {
             if(SELECT==0)return;
+            if(SELECT==-100)
+            {
+                ISAIPLAYER=1;
+                SELECT=3;
+                checkerBoard=new CheckerBoard("cs");
+                return;
+            }
             ISAIPLAYER=SELECT;
             SELECT=3;
             if(ISAIPLAYER ==1&&color==1)
@@ -257,6 +269,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
                 int xz;
                 if(x>OFFSET_X +60&&y>OFFSET_Y +80&&x<OFFSET_X +260&&y< OFFSET_Y +120)xz=1;
                 else if(x>OFFSET_X +60&&y>OFFSET_Y +120&&x<OFFSET_X +260&&y< OFFSET_Y +160)xz=2;
+                else if(x>OFFSET_X +60&&y>OFFSET_Y +160&&x<OFFSET_X +260&&y< OFFSET_Y +200)xz=-100;
                 else xz=0;
                 if(xz!=SELECT)
                 {
