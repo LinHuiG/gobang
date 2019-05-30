@@ -2,6 +2,7 @@ import java.util.regex.Pattern;
 
 public class GetScore {
     static int size;
+    static int INF=1000000000;
     public static enum Level {
         CON_5("长连", 0, new String[] { "11111", "22222" }, 100000),
         ALIVE_4("活四", 1, new String[] { "011110", "022220" }, 10000),
@@ -92,5 +93,17 @@ public class GetScore {
         //System.out.println(attack+" "+defence);
         ans=defence+attack+19-d;
         return ans;
+    }
+    static int getfinalScore(int map[][]){
+        int attack=-INF,defence=-INF;
+        for (int i=0;i<size;i++){
+            for(int j=0;j<size;j++){
+                if(map[i][j]==0){
+                    attack=Math.max(attack,getPlayerScorce(map.clone(),i,j,1));
+                    defence=Math.max(defence,getPlayerScorce(map.clone(),i,j,2));
+                }
+            }
+        }
+        return attack-defence;
     }
 }
