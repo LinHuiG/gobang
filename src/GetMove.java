@@ -29,7 +29,7 @@ public class GetMove {
         return vector;
     }
     static public int[] getMoveSimple(CheckerBoard board){
-        Vector<CheckerBoard> vector=getMoveList(board);
+        Vector<CheckerBoard> vector = getMoveList(new CheckerBoard(board));
         CheckerBoard b=vector.elementAt(0);
         int [] move =new int[2];
         move[0]=b.getPrx();
@@ -37,16 +37,25 @@ public class GetMove {
         return move;
     }
     static public int dfs(CheckerBoard board,int a,int b,int dep){
-        Vector<CheckerBoard>vector=getMoveList(board);
+        Vector<CheckerBoard>vector=getMoveList(new CheckerBoard(board));
         if(dep==maxdep){
             CheckerBoard finalborder=vector.elementAt(0);
-            return finalborder.getScore();
+            if (maxdep==0){
+                move[0]=finalborder.getPrx();
+                move[1]=finalborder.getPry();
+            }
+            return GetScore.getfinalScore(board.getMap());
         }
+
         int ans=0;
         if(dep%2==0)ans=-INF;
         else ans=INF;
         for (int i=0;i<node;i++){
+            Boolean update=false;
             CheckerBoard newboard=vector.get(i);
+            if(dep==0){
+                System.out.println("try "+newboard.getPrx()+"    "+newboard.getPry());
+            }
             int score=0;
             if(newboard.isWin(newboard.getPrx(),newboard.getPry())){
                 if(dep%2==0)score=INF;
@@ -56,9 +65,10 @@ public class GetMove {
                 newboard.move(newboard.getPrx(),newboard.getPry());
                 score=dfs(newboard,a,b,dep+1);
             }
-            if (dep==0&&ans<score){
+            if (dep==0&&(ans<score||update==false)){
                 move[0]=newboard.getPrx();
                 move[1]=newboard.getPry();
+                update=true;
             }
             if (dep%2==0){
                 ans=Math.max(ans,score);
@@ -75,6 +85,7 @@ public class GetMove {
     }
     static public int[] getMoveBydfs(CheckerBoard board){
         dfs(board,-INF,INF,0);
+
         return move;
     }
 }
