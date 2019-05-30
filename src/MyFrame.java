@@ -196,8 +196,9 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
                     System.out.println((pd==1?"黑子":"白子")+"赢了");
                     JOptionPane.showMessageDialog(this, "游戏结束," + (pd==1?"黑":"白") + "方获胜！");
                 }
+                checkerBoard.withdraw();
+                checkerBoard.save();
                 checkerBoard.reset();
-                
                 color=1;
                 SELECT=0;
                 ISAIPLAYER=-1;
@@ -228,7 +229,8 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             {
 
                 checkerBoard=new CheckerBoard("cs");
-                ISAIPLAYER=checkerBoard.isAi;
+                ISAIPLAYER=1;//ai
+                checkerBoard.isAi=1;
                 SELECT=3;
                 csms = true;
                 color = checkerBoard.getCount() % 2;

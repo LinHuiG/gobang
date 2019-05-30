@@ -168,6 +168,10 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
                 map[i][j]=-1;
             }
         }
+        prx = -1;
+        pry = -1;
+        isAi = 0;
+        historys = new Stack<chess>();
     }
     public int[][] getMap() {
         int[][] ans=new int[BOARD_SIZE][BOARD_SIZE];
@@ -335,7 +339,9 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
         historys.push(new chess(x, y, count % 2));
         if(isWin(x,y))
         {
-            return count%2;
+            map[x][y]=count%2;
+            count++;
+            return (count-1)%2;
         }
         map[x][y]=count%2;
         count++;
