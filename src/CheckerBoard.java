@@ -1,6 +1,17 @@
 import java.io.*;
 import java.util.Comparator;
+import java.util.Stack;
 
+class chess implements Serializable{
+    int x, y;
+    int color;
+
+    public chess(int x, int y, int color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+    }
+}
 public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cloneable{
     private int[][] map;//-1是无人 0是白，1是黑，黑先手
     private int count;
@@ -9,6 +20,8 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
     private int pry=-1;
     private int score;
     public int isAi=0;
+    private Stack<chess> historys = new Stack<chess>();
+
     String path="wzq.mo";
 
 
@@ -24,6 +37,7 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
                 map[i][j]=-1;
             }
         }
+
     }
 
     public CheckerBoard(String test)
@@ -41,6 +55,7 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
             this.pry=checkerBoard.pry;
             this.score=checkerBoard.score;
             this.isAi=checkerBoard.isAi;
+            this.historys = checkerBoard.historys;
             for (int i=0;i<this.BOARD_SIZE;i++)
             {
                 for(int j=0;j<this.BOARD_SIZE;j++)
@@ -317,6 +332,7 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
         }
         prx=x;
         pry=y;
+        historys.push(new chess(x, y, count % 2));
         if(isWin(x,y))
         {
             return count%2;
@@ -325,6 +341,30 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
         count++;
         if(isTide())return 3;
         return -2;
+    }
+    void withdraw()
+    {
+        if(count==1)return;
+        if(isAi==1&&count==2)return;
+        count--;
+        chess temp=historys.pop();
+        map[temp.x][temp.y]=-1;
+        if(!historys.empty()&&isAi==1)
+        {
+            count--;
+            temp=historys.pop();
+            map[temp.x][temp.y]=-1;
+        }
+        if(historys.empty())
+        {
+            prx=pry=-1;
+        }
+        else
+        {
+            temp=historys.peek();
+            prx=temp.x;
+            pry=temp.y;
+        }
     }
     @Override
     public int compareTo(CheckerBoard o) {

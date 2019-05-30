@@ -88,6 +88,9 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             g2.setFont(new Font("宋体", Font.BOLD, 30));
             g2.drawString("游戏信息：" + message, OFFSET_X +40, OFFSET_Y +20);
             // 输出时间信息
+            g2.setFont(new Font("宋体", Font.BOLD, 20));
+            g2.drawString("悔棋", OFFSET_X +100, OFFSET_Y +470);
+            g2.drawString("重新开始", OFFSET_X +220, OFFSET_Y +470);
             g2.setFont(new Font("宋体", 0, 14));
             g2.setColor(Color.BLACK);
             // 绘制棋盘
@@ -252,9 +255,26 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             return;
         }
         if (canPlay == true) {
-
             x = e.getX()- OFFSET_X;
             y = e.getY()- OFFSET_Y;
+            System.out.println(x+" "+y);
+            if(y>450&&y<470)
+            {
+                if(x>100&&x<140)
+                {
+                    checkerBoard.withdraw();
+                    return;
+                }
+                if(x>220&&x<300)
+                {
+                    checkerBoard.reset();
+
+                    color=1;
+                    SELECT=0;
+                    ISAIPLAYER=-1;
+                    return;
+                }
+            }
             x = (x ) / 20;
             y = (y - 60) / 20;
             if(x<0||y<0||x>=BOARD_SIZE||y>=BOARD_SIZE)return;
