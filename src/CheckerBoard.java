@@ -390,7 +390,7 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
             minx=temp.minx;
             miny=temp.miny;
             maxx=temp.maxx;
-            miny=temp.miny;
+            maxy=temp.maxy;
         }
     }
     @Override
