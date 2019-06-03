@@ -61,6 +61,10 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
             this.score=checkerBoard.score;
             this.isAi=checkerBoard.isAi;
             this.historys = checkerBoard.historys;
+            this.miny=checkerBoard.miny;
+            this.minx=checkerBoard.minx;
+            this.maxy=checkerBoard.maxy;
+            this.maxx=checkerBoard.maxx;
             for (int i=0;i<this.BOARD_SIZE;i++)
             {
                 for(int j=0;j<this.BOARD_SIZE;j++)
@@ -95,7 +99,7 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
             objectOutputStream.writeObject(this);
             objectOutputStream.flush();
             objectOutputStream.close();
-            System.out.println("保存成功");
+            //System.out.println("保存成功");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             System.out.println("保存失败，FileNotFoundException");
@@ -126,6 +130,14 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
         this.count=checkerBoard.count;
         this.BOARD_SIZE =checkerBoard. BOARD_SIZE;
         this.map=new int[this.BOARD_SIZE][this.BOARD_SIZE];
+        prx=checkerBoard.prx;
+        pry=checkerBoard.pry;
+        score=checkerBoard.score;
+        isAi=checkerBoard.isAi;
+        minx =checkerBoard.minx;
+        miny =checkerBoard.miny ;
+        maxx =checkerBoard.maxx;
+        maxy =checkerBoard.maxy;
         for (int i=0;i<this.BOARD_SIZE;i++)
         {
             for(int j=0;j<this.BOARD_SIZE;j++)
@@ -397,9 +409,5 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
     public int compareTo(CheckerBoard o) {
         return Integer.compare(this.getScore(),o.getScore());
     }
-    public static Comparator<CheckerBoard> cmpfx = new Comparator<CheckerBoard>() {
-        public int compare(CheckerBoard i1, CheckerBoard i2) {
-            return i2.getScore()-i1.getScore();
-        }
-    };
+    public static Comparator<CheckerBoard> cmpfx = (i1, i2) -> i2.getScore() - i1.getScore();
 }
