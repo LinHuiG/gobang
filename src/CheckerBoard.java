@@ -3,13 +3,17 @@ import java.util.Comparator;
 import java.util.Stack;
 
 class chess implements Serializable{
-    int x, y;
+    int x, y,minx,miny,maxx,maxy;
     int color;
 
-    public chess(int x, int y, int color) {
+    public chess(int x, int y, int color,int maxx,int maxy,int minx,int miny) {
         this.x = x;
         this.y = y;
         this.color = color;
+        this.maxx=maxx;
+        this.maxy=maxy;
+        this.minx=minx;
+        this.miny=miny;
     }
 }
 public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cloneable{
@@ -161,6 +165,10 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
     }
     public void reset()
     {
+        minx =19;
+        miny =19;
+        maxx =0;
+        maxy =0;
         count=1;
         for (int i=0;i<BOARD_SIZE;i++)
         {
@@ -337,11 +345,11 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
         }
         prx=x;
         pry=y;
-        historys.push(new chess(x, y, count % 2));
         minx = minx >x?x: minx;
         maxx = maxx <x?x: maxx;
         miny = miny >y?y: miny;
         maxy = maxy <y?y: maxy;
+        historys.push(new chess(x, y, count % 2,maxx,maxy,minx,miny));
         if(isWin(x,y))
         {
             map[x][y]=count%2;
@@ -369,12 +377,20 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
         if(historys.empty())
         {
             prx=pry=-1;
+            minx =19;
+            miny =19;
+            maxx =0;
+            maxy =0;
         }
         else
         {
             temp=historys.peek();
             prx=temp.x;
             pry=temp.y;
+            minx=temp.minx;
+            miny=temp.miny;
+            maxx=temp.maxx;
+            miny=temp.miny;
         }
     }
     @Override

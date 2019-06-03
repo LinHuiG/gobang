@@ -207,7 +207,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             {
                 message = "轮到黑方";
             }
-
+        System.out.println(checkerBoard.maxx+" "+checkerBoard.minx+" "+checkerBoard.maxy+" "+checkerBoard.miny);
         // 刷新屏幕,防止开始游戏时出现无法显示的情况.
         this.repaint();
 
