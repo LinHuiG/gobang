@@ -225,8 +225,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
             {
 
                 checkerBoard=new CheckerBoard("cs");
-                ISAIPLAYER=1;//ai
-                checkerBoard.isAi=1;
+                ISAIPLAYER=checkerBoard.isAi;//ai
                 SELECT = 0;
                 csms = true;
                 color = checkerBoard.getCount() % 2;
@@ -333,7 +332,7 @@ public class MyFrame extends JFrame implements MouseListener, Runnable {
 
         this.repaint();
     }
-    private void drawCell(Graphics g2d, int x, int y) {
+    private void drawCell(Graphics g2d, int x, int y) { 
 
         int length = CELL_WIDTH / 4;
         int xx = (x ) * CELL_WIDTH+10;
