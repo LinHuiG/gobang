@@ -3,48 +3,71 @@ import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.Vector;
 
+class Info implements Comparable<Info>{
+    public int x,y,score;
+    public int getX(){
+        return x;
+    }
+    public int getY(){
+        return y;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int compareTo(Info B) {
+        return Integer.compare(B.score,score);
+    }
+}
 public class GetMove {
     static int size=19;
     static int[]move=new int[2];
     static int maxdep=4,node=3;
     static int INF=1000000000;
-    static public Vector<CheckerBoard> getMoveList(CheckerBoard board) {
+
+    static public Vector<Info> getMoveList(CheckerBoard board) {
         size = board.BOARD_SIZE;
         GetScore.setsize(size);
-        Vector<CheckerBoard> vector = new Vector<>();
+        int minx=board.minx,miny=board.miny;
+        int maxx=board.maxx,maxy=board.maxy;
+        //System.out.println(minx+" "+maxx+" "+miny+" "+maxy);
+        minx=Math.max(0,minx-4);miny=Math.max(0,miny-4);
+        maxx=Math.min(maxx+4,size-1);maxy=Math.min(maxy+4,size-1);
+        Vector<Info> vector = new Vector<>();
+        //System.out.println(minx+" "+maxx+" "+miny+" "+maxy);
         int[][] map = board.getMap();
-        for (int i = 0; i < size; i++) {
+        for (int i = minx; i <maxx; i++) {
             //System.out.println();
-            for (int j = 0; j < size; j++) {
+            for (int j = miny; j < maxy; j++) {
                 //System.out.print(map[i][j]+" ");
                 if (map[i][j] == 0) {
-                    CheckerBoard newboard = new CheckerBoard(board);
+                    /*CheckerBoard newboard = new CheckerBoard(board);
                     newboard.setPrx(i);
-                    newboard.setPry(j);
-                    newboard.setScore(GetScore.getScorce(newboard.getMap(), i, j));
-                    vector.add(newboard);
+                    newboard.setPry(j);*/
+                    Info info=new Info();
+                    info.x=i;
+                    info.y=j;
+                    info.setScore(GetScore.getScorce(board.getMap(), i, j));
+                    vector.add(info);
                 }
             }
         }
         //System.out.println(vector.size());
-        Collections.sort(vector, CheckerBoard.cmpfx);
+        Collections.sort(vector);
         return vector;
     }
-    static public int[] getMoveSimple(CheckerBoard board){
-        Vector<CheckerBoard> vector = getMoveList(new CheckerBoard(board));
-        CheckerBoard b=vector.elementAt(0);
-        int [] move =new int[2];
-        move[0]=b.getPrx();
-        move[1]=b.getPry();
-        return move;
-    }
     static public int dfs(CheckerBoard board,int a,int b,int dep){
-        Vector<CheckerBoard>vector=getMoveList(new CheckerBoard(board));
+        Vector<Info>vector=getMoveList(new CheckerBoard(board));
         if(dep==maxdep){
-            CheckerBoard finalborder=vector.elementAt(0);
+            Info finalmove=vector.elementAt(0);
             if (maxdep==0){
-                move[0]=finalborder.getPrx();
-                move[1]=finalborder.getPry();
+                move[0]=finalmove.getX();
+                move[1]=finalmove.getY();
             }
             return GetScore.getfinalScore(board);
             //return finalborder.getScore();
@@ -54,24 +77,25 @@ public class GetMove {
         if(dep%2==0)ans=-INF;
         else ans=INF;
         Boolean update=false;
-        for (int i=0;i<node;i++){
-            CheckerBoard newboard=vector.get(i);
+        for (int i=0;i<Math.min(node,vector.size());i++){
+            Info newmove=vector.get(i);
             if(dep==0){
-                System.out.println("try "+newboard.getPrx()+"    "+newboard.getPry()+"  "+newboard.getScore());
+                System.out.println("try "+newmove.getX()+"    "+newmove.getY()+"  "+newmove.getScore());
             }
             int score=0;
-            if(newboard.isWin(newboard.getPrx(),newboard.getPry())){
+            CheckerBoard newboard=new CheckerBoard(board);
+            if(newboard.isWin(newmove.getX(),newmove.getY())){
                 if(dep%2==0)score=INF;
                 else score=-INF;
             }
             else {
-                newboard.move(newboard.getPrx(),newboard.getPry());
+                newboard.move(newmove.getX(),newmove.getY());
                 score=dfs(newboard,a,b,dep+1);
             }
             if (dep==0)System.out.println(score);
             if (dep==0&&(ans<score||update==false)){
-                move[0]=newboard.getPrx();
-                move[1]=newboard.getPry();
+                move[0]=newmove.getX();
+                move[1]=newmove.getY();
                 update=true;
             }
             if (dep%2==0){
@@ -89,7 +113,7 @@ public class GetMove {
     }
     static public int[] getMoveBydfs(CheckerBoard board){
         dfs(board,-INF,INF,0);
-
+        System.out.println(move[0]+" "+move[1]);
         return move;
     }
 }
