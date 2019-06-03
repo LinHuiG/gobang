@@ -20,6 +20,7 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
     private int pry=-1;
     private int score;
     public int isAi=0;
+    public int minx =19, miny =19, maxx =0, maxy =0;
     private Stack<chess> historys = new Stack<chess>();
 
     String path="wzq.mo";
@@ -337,6 +338,10 @@ public class CheckerBoard  implements Serializable , Comparable<CheckerBoard>,Cl
         prx=x;
         pry=y;
         historys.push(new chess(x, y, count % 2));
+        minx = minx >x?x: minx;
+        maxx = maxx <x?x: maxx;
+        miny = miny >y?y: miny;
+        maxy = maxy <y?y: maxy;
         if(isWin(x,y))
         {
             map[x][y]=count%2;
