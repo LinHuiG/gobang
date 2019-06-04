@@ -28,10 +28,10 @@ public class GetMove {
     static int size=19;
     static int[]move=new int[2];
     static int maxdep=4,node=5;
-    static int maxat,maxde;
+    static int maxat,maxde,winx,winy;
     static int INF=1000000000;
 
-    static public Vector<Info> getMoveList(CheckerBoard board) {
+    static public Vector<Info> getMoveList(CheckerBoard board,int p) {
         size = board.BOARD_SIZE;
         maxde=0;maxat=0;
         GetScore.setsize(size);
@@ -51,8 +51,12 @@ public class GetMove {
                     /*CheckerBoard newboard = new CheckerBoard(board);
                     newboard.setPrx(i);
                     newboard.setPry(j);*/
-                    Info info=GetScore.getScorce(board.getMap(), i, j);
-                    maxat=Math.max(maxat,info.at);
+                    Info info=GetScore.getScorce(board.getMap(), i, j,p);
+                    if(info.at>maxat){
+                        maxat=info.at;
+                        winx=info.x;
+                        winy=info.y;
+                    }
                     maxde=Math.max(maxde,info.de);
                     vector.add(info);
                 }
@@ -73,11 +77,17 @@ public class GetMove {
             return GetScore.getfinalScore(board);
             //return finalborder.getScore();
         }
-        Vector<Info>vector=getMoveList(new CheckerBoard(board));
+        Vector<Info>vector=getMoveList(new CheckerBoard(board),dep%2);
         int ans=0;
         if(dep%2==0)ans=-INF;
         else ans=INF;
-        if (dep%2==0&&maxat>=10000&&maxde<100000)return INF;
+        if (dep%2==0&&maxat>=10000&&maxde<100000){
+            if (dep==0){
+                move[0]=winx;
+                move[1]=winy;
+            }
+            return INF;
+        }
         else if(dep%2==1&&maxde>=10000&&maxat<100000)return -INF;
         Boolean update=false;
         for (int i=0;i<Math.min(node,vector.size());i++){

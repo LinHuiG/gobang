@@ -96,13 +96,14 @@ public class GetScore {
         ans=Math.max(ans,score);
         return ans;
     }
-    static Info getScorce(int map[][],int x,int y){
+    static Info getScorce(int map[][],int x,int y,int p){
         int d=Math.max(Math.abs(x-size/2),Math.abs(y-size/2));
         int ans=0;
         int attack=getPlayerScorce(map,x,y,1);
         int defence=getPlayerScorce(map,x,y,2);
         //if(x==11&&y==12)System.out.println(x+"  "+y+"  "+attack+" "+defence+"  "+d);
-        ans=defence+attack+19-d;
+        ans= (int) (defence+attack*1.1+19-d);
+        if(p==1)ans=(int) (defence*1.1+attack+19-d);
         Info temp=new Info();
         temp.at=attack;temp.de=defence;
         temp.score=ans;temp.x=x;temp.y=y;
