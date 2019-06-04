@@ -12,9 +12,9 @@ public class GetScore {
         SLEEP_3("眠三", 4, new String[] {"001112|010112|011012|10011|10101|2011102", "002221|020221|022021|20022|20202|1022201" }, 50),
         ALIVE_2("活二", 5, new String[] { "00110|01010|010010", "00220|02020|020020" }, 5),
         SLEEP_2("眠二", 6, new String[] {"000112|001012|010012|10001|2010102|2011002", "000221|002021|020021|20002|1020201|1022001" }, 3),
-        DEAD_3("死三", 7, new String[] { "21112", "12221" }, -5),
-        DEAD_4("死四", 8, new String[] { "211112", "122221" }, -5),
-        DEAD_2("死二", 9, new String[] { "2112", "1221" }, -5),
+        //DEAD_3("死三", 7, new String[] { "21112", "12221" }, -5),
+        //DEAD_4("死四", 8, new String[] { "211112", "122221" }, -5),
+        //DEAD_2("死二", 9, new String[] { "2112", "1221" }, -5),
         NULL("null", 10, new String[] { "", "" }, 0);
         private String name;
         private int index;
@@ -96,14 +96,17 @@ public class GetScore {
         ans=Math.max(ans,score);
         return ans;
     }
-    static int getScorce(int map[][],int x,int y){
+    static Info getScorce(int map[][],int x,int y){
         int d=Math.max(Math.abs(x-size/2),Math.abs(y-size/2));
         int ans=0;
         int attack=getPlayerScorce(map,x,y,1);
         int defence=getPlayerScorce(map,x,y,2);
-        //if(x==4&&y==7)System.out.println(x+"  "+y+"  "+attack+" "+defence+"  "+d);
+        //if(x==11&&y==12)System.out.println(x+"  "+y+"  "+attack+" "+defence+"  "+d);
         ans=defence+attack+19-d;
-        return ans;
+        Info temp=new Info();
+        temp.at=attack;temp.de=defence;
+        temp.score=ans;temp.x=x;temp.y=y;
+        return temp;
     }
     static int getfinalScore(CheckerBoard board){
         int attack=0,defence=0,se=0;
